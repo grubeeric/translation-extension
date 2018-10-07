@@ -6,6 +6,10 @@ const SPANISH = "es";
 chrome.tabs.executeScript({
     code: "window.getSelection().toString();"
 }, async (selection) => {
+    document.getElementById("englishText").innerHTML = `English:`;
+    document.getElementById("germanText").innerHTML = `Deutsche:`;
+    document.getElementById("spanishText").innerHTML = `Español:`;
+    document.getElementById("inputText").innerHTML = `This is where the freeform mode will be`;
     const translate = selection[0];
     const lang = await detectLanguage(selection);
     const detectedLang = JSON.parse(lang).data.detections[0][0].language;
