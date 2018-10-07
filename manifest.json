@@ -1,0 +1,14 @@
+{
+    "manifest_version": 3,
+    "name": "Translate Highlighted Word",
+    "description": "This extension will translate any highlighted word/sentence to the auto-detected language or language of your choosing",
+    "version": "1.0",
+    "browser_action": {
+        "default_icon": "icon.png",
+        "default_popup": "popup.html"
+    },
+    "permissions": [
+        "activeTab",
+        "contextMenus"
+    ]
+}
