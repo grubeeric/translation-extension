@@ -1,7 +1,10 @@
 const API_KEY = "AIzaSyCiu4vodpZGgh69O0c00PhnGRuJvjuNdHo";
-const GERMAN = "de";
-const ENGLISH = "en";
-const SPANISH = "es";
+
+const LANGUAGES = {
+    GERMAN: "de",
+    ENGLISH: "en",
+    SPANISH: "es",
+}
 
 chrome.tabs.executeScript({
     code: "window.getSelection().toString();"
@@ -22,37 +25,20 @@ chrome.tabs.executeScript({
     document.getElementById("spanishText").innerHTML = `Español: ${spanish}`;
 });
 
-async function getTranslations(translate, lang) {
-    let totalTranslations = {
-        english: undefined,
-        spanish: undefined,
-        german: undefined
-    };
-    if (lang === ENGLISH) {
-        const german = getTranslation(translate, GERMAN);
-        const spanish = getTranslation(translate, SPANISH);
-        const translations = await Promise.all([german, spanish]);
-        totalTranslations.english = translate;
-        totalTranslations.german = translations[0];
-        totalTranslations.spanish = translations[1];
-    }
-    else if (lang === SPANISH) {
-        const german = getTranslation(translate, GERMAN);
-        const english = getTranslation(translate, ENGLISH);
-        const translations = await Promise.all([german, english]);
-        totalTranslations.spanish = translate;
-        totalTranslations.german = translations[0];
-        totalTranslations.english = translations[1];
-    }
-    else {
-        const spanish = getTranslation(translate, SPANISH);
-        const english = getTranslation(translate, ENGLISH);
-        const translations = await Promise.all([spanish, english]);
-        totalTranslations.spanish = translations[0];
-        totalTranslations.english = translations[1];
-        totalTranslations.german = translate;
-    }
-    return totalTranslations;
+function getTranslations(phraseToTranslate, detectedLang) {
+    return Promise.all(Object.values(LANGUAGES)
+        .map((lang) => {
+            return lang === detectedLang
+                ? Promise.resolve(phraseToTranslate)
+                : getTranslation(phraseToTranslate, lang);
+        }))
+        .then((translations) => {
+            return {
+                german : translations[0],
+                english: translations[1],
+                spanish: translations[2],
+            }
+        });
 }
 
 function getTranslation(translate, lang) {
